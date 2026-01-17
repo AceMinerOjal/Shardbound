@@ -30,15 +30,50 @@ public class Warrior extends Player {
   protected void lastItem() {
   }
 
+  // Damaging small have a chance for a character's element's status effect
   private void stab() {
+    double cost = 5;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    // Primary attack: TODO
+    setAnimation(AnimationState.ATTACK);
   }
 
   private void dash() {
+    double cost = 8;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    double dist = 32; // WIP
+    switch (direction) {
+      case UP -> y -= dist;
+      case DOWN -> y += dist;
+      case LEFT -> x -= dist;
+      case RIGHT -> x += dist;
+    }
+    setAnimation(AnimationState.ATTACK);
   }
 
   private void stomp() {
+    double cost = 10;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    // AOE damage: TODO
+    setAnimation(AnimationState.ATTACK);
   }
 
   private void cleave() {
+    double cost = 12;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    // Big damage: TODO
+    setAnimation(AnimationState.ATTACK);
   }
 }

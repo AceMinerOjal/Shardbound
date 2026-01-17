@@ -22,7 +22,7 @@ public class Mage extends Player {
       case 0 -> ball();
       case 1 -> teleport();
       case 2 -> nova();
-      case 3 -> meteor();
+      case 3 -> explosion();
     }
   }
 
@@ -30,15 +30,50 @@ public class Mage extends Player {
   protected void lastItem() {
   }
 
+  // Damaging skills have a chance for a character's element's status effect
   private void ball() {
+    double cost = 6;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    // Primary attack: TODO
+    setAnimation(AnimationState.ATTACK);
   }
 
   private void teleport() {
+    double cost = 12;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    double dist = 96;
+    switch (direction) {
+      case UP -> y -= dist;
+      case DOWN -> y += dist;
+      case LEFT -> x -= dist;
+      case RIGHT -> x += dist;
+    }
+    setAnimation(AnimationState.ATTACK);
   }
 
   private void nova() {
+    double cost = 18;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    // AOE damage: TODO
+    setAnimation(AnimationState.ATTACK);
   }
 
-  private void meteor() {
+  private void explosion() {
+    double cost = 20;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    // Big damage: TODO
+    setAnimation(AnimationState.ATTACK);
   }
 }

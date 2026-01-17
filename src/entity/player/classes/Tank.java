@@ -31,14 +31,42 @@ public class Tank extends Player {
   }
 
   private void shield() {
+    double cost = 5;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    // Grants few seconds of immunity: TODO
+    setAnimation(AnimationState.ATTACK);
   }
 
   private void bash() {
+    double cost = 6;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    // Small distance dash with damage : TODO
+    setAnimation(AnimationState.ATTACK);
   }
 
   private void wall() {
+    double cost = 10;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    // Create a defensive nova to grant immunity: TODO
+    setAnimation(AnimationState.ATTACK);
   }
 
   private void taunt() {
+    double cost = 4;
+    if (!mana.canSpend(cost)) {
+      return;
+    }
+    mana.spend(cost);
+    // Forces enemies to target the tank: TODO
+    setAnimation(AnimationState.ATTACK);
   }
 }
