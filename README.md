@@ -13,6 +13,8 @@ AetherResonance is a top-down Java party RPG with:
 - elemental skill/status system
 - map-aware enemies with 10-tile sensing and pathfinding
 
+This project was previously named `legend-java`.
+
 ## Running
 
 Build and run with your normal Java/Maven workflow.
