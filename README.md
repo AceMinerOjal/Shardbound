@@ -13,6 +13,12 @@ Shardbound is a top-down Java party RPG with:
 
 Build and run with your normal Java/Maven workflow.
 
+### Paths
+
+- map resources: `maps/<mapId>.json`
+- quicksave file: `saves/quicksave.properties`
+- path constants source: `src/main/GamePaths.java`
+
 Network mode is configured with JVM args:
 
 - local (default): `--mode=local`

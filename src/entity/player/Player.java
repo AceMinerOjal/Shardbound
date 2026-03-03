@@ -1,4 +1,4 @@
-package entity;
+package entity.player;
 
 import lib.Entity;
 import lib.Hitbox;

@@ -3,11 +3,11 @@ package entity.player.classes;
 import main.KeyHandler;
 import main.PlayerControls;
 
-import entity.Player;
-import entity.SignatureElement;
-import entity.StatusEffectType;
+import entity.player.Player;
+import entity.player.SignatureElement;
+import entity.player.StatusEffectType;
 import entity.player.stats.*;
-import entity.Health;
+import entity.player.Health;
 
 public class Tank extends Player {
   public Tank(double x, double y, KeyHandler kh, PlayerControls controls) {

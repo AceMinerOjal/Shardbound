@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import entity.Player;
+import entity.player.Player;
 
 public class LevelManager {
   private final Map<String, String> levelResources = new HashMap<>();

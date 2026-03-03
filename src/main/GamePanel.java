@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 
-import entity.Player;
-import entity.Enemy;
+import entity.player.Player;
+import entity.enemy.Enemy;
 import entity.player.classes.Mage;
 import entity.player.classes.Priest;
 import entity.player.classes.Tank;
@@ -71,7 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
       KeyEvent.VK_F3,
       KeyEvent.VK_F4
   };
-  private static final String[] MAP_IDS = { "world", "cave", "dungeon" };
+  private static final String[] MAP_IDS = GamePaths.DEFAULT_MAP_IDS;
   private static final NetInput EMPTY_INPUT = new NetInput(
       false, false, false, false, false, false, false, false, false);
 
@@ -117,7 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     boolean[] mapExists = new boolean[MAP_IDS.length];
     for (int i = 0; i < MAP_IDS.length; i++) {
-      String mapPath = "maps/" + MAP_IDS[i] + ".json";
+      String mapPath = GamePaths.mapResource(MAP_IDS[i]);
       mapExists[i] = resourceExists(mapPath);
       if (mapExists[i]) {
         levelManager.registerLevel(MAP_IDS[i], mapPath);

@@ -1,4 +1,4 @@
-package entity;
+package entity.player;
 
 public enum PlayerAttribute {
   MAX_HP,
