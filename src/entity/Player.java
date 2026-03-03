@@ -121,15 +121,22 @@ public abstract class Player extends Entity implements EffectTarget {
       return false;
     }
 
+    boolean loadedElement = false;
     try {
       signatureElement = SignatureElement.valueOf(state.signatureElement());
+      loadedElement = true;
     } catch (Exception ignored) {
       signatureElement = SignatureElement.FIRE;
     }
     try {
       statusEffectType = StatusEffectType.valueOf(state.statusEffectType());
     } catch (Exception ignored) {
-      statusEffectType = StatusEffectType.BURN;
+      statusEffectType = statusForElement(signatureElement);
+    }
+    if (loadedElement) {
+      statusEffectType = statusForElement(signatureElement);
+    } else {
+      signatureElement = elementForStatus(statusEffectType);
     }
 
     setPosition(state.x(), state.y());
@@ -276,7 +283,8 @@ public abstract class Player extends Entity implements EffectTarget {
       return;
     }
 
-    StatusEffect effect = switch (statusEffectType) {
+    // Offensive skills always inherit the active elemental skill type.
+    StatusEffect effect = switch (statusForElement(signatureElement)) {
       case BURN -> new FireBurn(3.0, Math.max(1.0, power * 0.25), 1.0);
       case FREEZE -> new IceFreeze(Math.max(0.75, 1.25 + power * 0.01));
       case CONDUCTIVE -> new LightningConductive(3.0, Math.max(1.0, power * 0.2), 1.0, 0.5, 64.0);
@@ -325,11 +333,13 @@ public abstract class Player extends Entity implements EffectTarget {
 
   protected void cycleSignatureElement() {
     signatureElement = signatureElement.next();
+    statusEffectType = statusForElement(signatureElement);
     System.out.println(getClass().getSimpleName() + " element -> " + signatureElement);
   }
 
   protected void cycleStatusEffectType() {
     statusEffectType = statusEffectType.next();
+    signatureElement = elementForStatus(statusEffectType);
     System.out.println(getClass().getSimpleName() + " status -> " + statusEffectType);
   }
 
@@ -377,6 +387,24 @@ public abstract class Player extends Entity implements EffectTarget {
     double newBase = Math.max(1.0, stat.getBase() + delta);
     stat.setBase(newBase);
     stat.set(newBase);
+  }
+
+  private StatusEffectType statusForElement(SignatureElement element) {
+    return switch (element) {
+      case FIRE -> StatusEffectType.BURN;
+      case ICE -> StatusEffectType.FREEZE;
+      case LIGHTNING -> StatusEffectType.CONDUCTIVE;
+      case EARTH -> StatusEffectType.FRACTURE;
+    };
+  }
+
+  private SignatureElement elementForStatus(StatusEffectType status) {
+    return switch (status) {
+      case BURN -> SignatureElement.FIRE;
+      case FREEZE -> SignatureElement.ICE;
+      case CONDUCTIVE -> SignatureElement.LIGHTNING;
+      case FRACTURE -> SignatureElement.EARTH;
+    };
   }
 
   @Override

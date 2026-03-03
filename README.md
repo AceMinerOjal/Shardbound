@@ -51,16 +51,15 @@ Per-class controls:
 - Warrior = `LIGHTNING`
 - Tank = `EARTH`
 - Priest = `ICE`
-- All classes can use all status effects.
-- Status effects are switched by using an inventory item (placeholder inventory system).
+- Skill type is always the current signature element (`FIRE`, `ICE`, `LIGHTNING`, `EARTH`), and any class can switch it at runtime via items.
 - Item controls:
 - `modifier + skill1`: switch selected inventory item
 - `modifier + skill2`: use selected inventory item
 - Inventory items:
-- `STATUS_TUNER`: cycles status effects (`BURN`, `FREEZE`, `CONDUCTIVE`, `FRACTURE`)
-- `ELEMENT_TUNER`: cycles signature element (`FIRE`, `ICE`, `LIGHTNING`, `EARTH`)
+- `ELEMENT_TUNER`: cycles skill/signature element (`FIRE`, `ICE`, `LIGHTNING`, `EARTH`)
+- `STATUS_TUNER`: cycles status effects (`BURN`, `FREEZE`, `CONDUCTIVE`, `FRACTURE`) and syncs the matching element type
 - `ATTRIBUTE_TUNER`: cycles editable attribute (`MAX_HP`, `HP_REGEN`, `MAX_MANA`, `MANA_REGEN`, `AP`, `DEFENCE`)
-- Offensive skills apply whichever status effect is currently selected.
+- Offensive skills apply the status effect that matches the active element type.
 
 ### Runtime attribute editing
 
