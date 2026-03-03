@@ -12,13 +12,13 @@ import net.NetworkConfig;
 import net.NetworkMode;
 
 public class Main {
-  private static final String WINDOW_ICON_RESOURCE = "shardbound.ico";
+  private static final String WINDOW_ICON_RESOURCE = "AetherResonance.ico";
 
   public static void main(String[] args) {
     NetworkConfig config = parseArgs(args);
 
     SwingUtilities.invokeLater(() -> {
-      JFrame frame = new JFrame("Shardbound");
+      JFrame frame = new JFrame("AetherResonance");
       applyWindowIcon(frame);
 
       GamePanel gamePanel = new GamePanel(config);

@@ -1,10 +1,10 @@
-# Shardbound
+# AetherResonance
 
 <p align="center">
-  <img src="res/shardbound.ico" alt="Shardbound logo" width="96" height="96" />
+  <img src="res/AetherResonance.ico" alt="AetherResonance logo" width="96" height="96" />
 </p>
 
-Shardbound is a top-down Java party RPG with:
+AetherResonance is a top-down Java party RPG with:
 
 - up to 4 class slots (Mage, Warrior, Tank, Priest)
 - Tiled JSON maps with collision and portals
@@ -21,7 +21,7 @@ Build and run with your normal Java/Maven workflow.
 
 - map resources: `maps/<mapId>.json`
 - quicksave file: `saves/quicksave.properties`
-- window icon file: `res/shardbound.ico` (loaded as classpath resource `shardbound.ico`)
+- window icon file: `res/AetherResonance.ico` (loaded as classpath resource `AetherResonance.ico`)
 - path constants source: `src/main/GamePaths.java`
 
 Network mode is configured with JVM args:
