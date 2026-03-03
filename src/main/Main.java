@@ -2,19 +2,24 @@ package main;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 
 import net.NetworkConfig;
 import net.NetworkMode;
 
 public class Main {
+  private static final String WINDOW_ICON_RESOURCE = "shardbound.ico";
 
   public static void main(String[] args) {
     NetworkConfig config = parseArgs(args);
 
     SwingUtilities.invokeLater(() -> {
       JFrame frame = new JFrame("Shardbound");
+      applyWindowIcon(frame);
 
       GamePanel gamePanel = new GamePanel(config);
       frame.add(gamePanel);
@@ -32,6 +37,17 @@ public class Main {
       frame.setVisible(true);
       gamePanel.startGameThread();
     });
+  }
+
+  private static void applyWindowIcon(JFrame frame) {
+    URL iconUrl = Thread.currentThread().getContextClassLoader().getResource(WINDOW_ICON_RESOURCE);
+    if (iconUrl == null) {
+      System.err.println("Window icon not found: " + WINDOW_ICON_RESOURCE);
+      return;
+    }
+
+    Image icon = Toolkit.getDefaultToolkit().getImage(iconUrl);
+    frame.setIconImage(icon);
   }
 
   private static NetworkConfig parseArgs(String[] args) {
