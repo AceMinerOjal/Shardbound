@@ -1,17 +1,22 @@
 package entity.player.classes;
 
+import java.util.List;
+
 import main.KeyHandler;
 import main.PlayerControls;
 
 import entity.player.Health;
 import entity.player.Player;
+import entity.player.PlayerRace;
+import entity.player.Profession;
 import entity.player.SignatureElement;
 import entity.player.stats.Dialectics;
 import entity.player.stats.Mana;
 
 public class Tank extends Player {
   public Tank(double x, double y, KeyHandler kh, PlayerControls controls) {
-    super(x, y, kh, controls, SignatureElement.EARTH);
+    super(x, y, kh, controls, SignatureElement.EARTH, PlayerRace.DWARF,
+        List.of(Profession.FORGING, Profession.MINING_ORES, Profession.MINING_ORBS));
 
     this.hp = new Health(100, 100, 0.5);
     this.mana = new Mana(10, 10, 0.25);

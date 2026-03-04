@@ -2,7 +2,6 @@ package entity.player;
 
 import lib.Entity;
 import lib.Hitbox;
-import lib.Stat;
 import lib.Timer;
 import main.KeyHandler;
 import main.PlayerControls;
@@ -31,23 +30,28 @@ public abstract class Player extends Entity implements EffectTarget {
 
   private final KeyHandler kh;
   private final PlayerControls controls;
+  private final PlayerRace race;
+  private final List<Profession> professions;
   private final List<Timer> activeEffects = new ArrayList<>();
   private final List<StatusEffect> activeStatusEffects = new ArrayList<>();
-  private InventoryItem selectedInventoryItem = InventoryItem.STATUS_TUNER;
+  private final List<InventoryItem> inventory = List.of(InventoryItem.ELEMENT_TUNER);
+  private int selectedInventoryIndex;
   private List<Player> party = Collections.emptyList();
   private SignatureElement signatureElement;
-  private PlayerAttribute editableAttribute = PlayerAttribute.MAX_HP;
   private double damageTakenMultiplier = 1.0;
   private boolean frozen;
   private boolean friendlyFireEnabled;
 
-  public Player(double x, double y, KeyHandler kh, PlayerControls controls, SignatureElement defaultElement) {
+  public Player(double x, double y, KeyHandler kh, PlayerControls controls, SignatureElement defaultElement,
+      PlayerRace race, List<Profession> professions) {
     setPosition(x, y);
     // Keep feet/body collision tighter than full 32x32 sprite frame.
     setHitbox(20, 24, 6, 8);
     this.kh = kh;
     this.controls = controls;
     this.signatureElement = defaultElement;
+    this.race = race;
+    this.professions = List.copyOf(professions);
     this.level = new Level();
   }
 
@@ -146,10 +150,9 @@ public abstract class Player extends Entity implements EffectTarget {
     for (int i = 0; i < skillKeys.length; i++) {
       if (kh.isTriggered(skillKeys[i])) {
         if (isShifting) {
-          activateItem(i);
+          handleInventoryInput(i);
         } else {
-          performSkill(i);
-          setAnimation(AnimationState.ATTACK);
+          handleHotbarInput(i);
         }
         return;
       }
@@ -190,12 +193,18 @@ public abstract class Player extends Entity implements EffectTarget {
 
   protected abstract void performSkill(int skillNum);
 
-  private void activateItem(int slot) {
+  private void handleHotbarInput(int slot) {
+    performSkill(slot);
+    setAnimation(AnimationState.ATTACK);
+  }
+
+  private void handleInventoryInput(int slot) {
     switch (slot) {
-      case 0 -> cycleInventoryItem();
+      case 0 -> selectPreviousInventoryItem();
       case 1 -> useSelectedInventoryItem();
-      case 2 -> adjustEditableAttribute(true);
-      case 3 -> adjustEditableAttribute(false);
+      case 2 -> selectNextInventoryItem();
+      default -> {
+      }
     }
   }
 
@@ -322,6 +331,14 @@ public abstract class Player extends Entity implements EffectTarget {
     return signatureElement;
   }
 
+  public PlayerRace getRace() {
+    return race;
+  }
+
+  public List<Profession> getProfessions() {
+    return professions;
+  }
+
   public void setFriendlyFireEnabled(boolean friendlyFireEnabled) {
     this.friendlyFireEnabled = friendlyFireEnabled;
   }
@@ -331,56 +348,24 @@ public abstract class Player extends Entity implements EffectTarget {
     System.out.println(getClass().getSimpleName() + " element -> " + signatureElement);
   }
 
-  protected void cycleStatusEffectType() {
-    signatureElement = signatureElement.next();
-    System.out.println(getClass().getSimpleName() + " status -> " + statusForElement(signatureElement)
-        + " (element " + signatureElement + ")");
+  private InventoryItem selectedInventoryItem() {
+    return inventory.get(selectedInventoryIndex);
   }
 
-  protected void cycleEditableAttribute() {
-    editableAttribute = editableAttribute.next();
-    System.out.println(getClass().getSimpleName() + " attribute -> " + editableAttribute);
+  private void selectPreviousInventoryItem() {
+    selectedInventoryIndex = (selectedInventoryIndex - 1 + inventory.size()) % inventory.size();
+    System.out.println(getClass().getSimpleName() + " inventory -> " + selectedInventoryItem());
   }
 
-  protected void adjustEditableAttribute(boolean increase) {
-    double sign = increase ? 1.0 : -1.0;
-    switch (editableAttribute) {
-      case MAX_HP -> adjustPrimaryStat(hp, 5 * sign);
-      case HP_REGEN -> hp.setRegen(Math.max(0.0, hp.getRegen() + 0.25 * sign));
-      case MAX_MANA -> adjustPrimaryStat(mana, 5 * sign);
-      case MANA_REGEN -> mana.setRegen(Math.max(0.0, mana.getRegen() + 0.25 * sign));
-      case AP -> adjustCombatStat(ap, 2 * sign);
-      case DEFENCE -> adjustCombatStat(defence, 2 * sign);
-    }
+  private void selectNextInventoryItem() {
+    selectedInventoryIndex = (selectedInventoryIndex + 1) % inventory.size();
+    System.out.println(getClass().getSimpleName() + " inventory -> " + selectedInventoryItem());
   }
 
-  protected void cycleInventoryItem() {
-    selectedInventoryItem = selectedInventoryItem.next();
-    System.out.println(getClass().getSimpleName() + " item -> " + selectedInventoryItem);
-  }
-
-  protected void useSelectedInventoryItem() {
-    switch (selectedInventoryItem) {
-      case STATUS_TUNER -> cycleStatusEffectType();
+  private void useSelectedInventoryItem() {
+    switch (selectedInventoryItem()) {
       case ELEMENT_TUNER -> cycleSignatureElement();
-      case ATTRIBUTE_TUNER -> cycleEditableAttribute();
     }
-  }
-
-  private void adjustPrimaryStat(Stat stat, double delta) {
-    double current = stat.get();
-    double oldMax = stat.getMax();
-    double ratio = oldMax > 0.0 ? current / oldMax : 1.0;
-    double newBase = Math.max(1.0, stat.getBase() + delta);
-    stat.setBase(newBase);
-    stat.setMax(newBase);
-    stat.set(newBase * ratio);
-  }
-
-  private void adjustCombatStat(Stat stat, double delta) {
-    double newBase = Math.max(1.0, stat.getBase() + delta);
-    stat.setBase(newBase);
-    stat.set(newBase);
   }
 
   private StatusEffectType statusForElement(SignatureElement element) {

@@ -1,0 +1,14 @@
+package entity.player;
+
+public enum Profession {
+  FORESTING,
+  WOODCUTTING,
+  FORGING,
+  MINING_ORES,
+  MINING_ORBS,
+  CRAFT_SCROLLS,
+  CRAFT_ROBES,
+  CRAFT_WANDS,
+  ALCHEMY,
+  BLESSING_ENCHANTING
+}

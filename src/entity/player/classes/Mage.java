@@ -1,17 +1,22 @@
 package entity.player.classes;
 
+import java.util.List;
+
 import main.KeyHandler;
 import main.PlayerControls;
 
 import entity.player.Health;
 import entity.player.Player;
+import entity.player.PlayerRace;
+import entity.player.Profession;
 import entity.player.SignatureElement;
 import entity.player.stats.Dialectics;
 import entity.player.stats.Mana;
 
 public class Mage extends Player {
   public Mage(double x, double y, KeyHandler kh, PlayerControls controls) {
-    super(x, y, kh, controls, SignatureElement.FIRE);
+    super(x, y, kh, controls, SignatureElement.FIRE, PlayerRace.ELF,
+        List.of(Profession.CRAFT_SCROLLS, Profession.CRAFT_ROBES, Profession.CRAFT_WANDS));
 
     this.hp = new Health(50, 50, 0.25);
     this.mana = new Mana(20, 20, 0.5);

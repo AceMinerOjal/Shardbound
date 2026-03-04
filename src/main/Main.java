@@ -10,18 +10,20 @@ import java.net.URL;
 
 import net.NetworkConfig;
 import net.NetworkMode;
+import render.vulkan.VulkanShaderInitializer;
 
 public class Main {
   private static final String WINDOW_ICON_RESOURCE = "AetherResonance.ico";
 
   public static void main(String[] args) {
-    NetworkConfig config = parseArgs(args);
+    LaunchOptions launchOptions = parseArgs(args);
+    AutoCloseable vulkanContext = initializeRenderer(launchOptions.renderBackend());
 
     SwingUtilities.invokeLater(() -> {
       JFrame frame = new JFrame("AetherResonance");
       applyWindowIcon(frame);
 
-      GamePanel gamePanel = new GamePanel(config);
+      GamePanel gamePanel = new GamePanel(launchOptions.networkConfig());
       frame.add(gamePanel);
       frame.pack();
 
@@ -30,6 +32,13 @@ public class Main {
         @Override
         public void windowClosing(WindowEvent e) {
           gamePanel.shutdown();
+          if (vulkanContext != null) {
+            try {
+              vulkanContext.close();
+            } catch (Exception ex) {
+              System.err.println("Failed to close Vulkan resources: " + ex.getMessage());
+            }
+          }
         }
       });
       frame.setResizable(false);
@@ -37,6 +46,21 @@ public class Main {
       frame.setVisible(true);
       gamePanel.startGameThread();
     });
+  }
+
+  private static AutoCloseable initializeRenderer(RenderBackend backend) {
+    if (backend != RenderBackend.VULKAN) {
+      return null;
+    }
+
+    try {
+      VulkanShaderInitializer initializer = VulkanShaderInitializer.initialize();
+      System.out.println("Vulkan renderer initialized (shader modules created).");
+      return initializer;
+    } catch (RuntimeException ex) {
+      System.err.println("Vulkan initialization failed, continuing with Java2D fallback: " + ex.getMessage());
+      return null;
+    }
   }
 
   private static void applyWindowIcon(JFrame frame) {
@@ -50,10 +74,11 @@ public class Main {
     frame.setIconImage(icon);
   }
 
-  private static NetworkConfig parseArgs(String[] args) {
+  private static LaunchOptions parseArgs(String[] args) {
     NetworkMode mode = NetworkMode.LOCAL;
     String host = "127.0.0.1";
     int port = 7777;
+    RenderBackend renderBackend = RenderBackend.JAVA2D;
 
     for (String arg : args) {
       if (arg.startsWith("--mode=")) {
@@ -73,9 +98,19 @@ public class Main {
           port = Integer.parseInt(arg.substring("--port=".length()).trim());
         } catch (NumberFormatException ignored) {
         }
+      } else if (arg.startsWith("--renderer=")) {
+        String value = arg.substring("--renderer=".length()).trim().toLowerCase();
+        if ("vulkan".equals(value)) {
+          renderBackend = RenderBackend.VULKAN;
+        } else {
+          renderBackend = RenderBackend.JAVA2D;
+        }
       }
     }
 
-    return new NetworkConfig(mode, host, port);
+    return new LaunchOptions(new NetworkConfig(mode, host, port), renderBackend);
+  }
+
+  private record LaunchOptions(NetworkConfig networkConfig, RenderBackend renderBackend) {
   }
 }

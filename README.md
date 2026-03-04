@@ -1,7 +1,7 @@
 # AetherResonance
 
 <p align="center">
-  <img src="res/AetherResonance.ico" alt="AetherResonance logo" width="96" height="96" />
+  <img src="res/AetherResonance.ico" alt="AetherResonance logo" width="256" height="256" />
 </p>
 
 AetherResonance is a top-down Java party RPG with:
@@ -34,6 +34,11 @@ Network mode is configured with JVM args:
 - TCP host: `--mode=tcp-host --port=7777`
 - TCP client: `--mode=tcp-client --host=HOST_IP --port=7777`
 
+Renderer mode:
+
+- Java2D (default): `--renderer=java2d`
+- Vulkan shader bootstrap: `--renderer=vulkan` (falls back to Java2D if Vulkan init fails)
+
 Networking model:
 
 - host is authoritative
@@ -49,12 +54,11 @@ Join slots:
 - `F3` Tank
 - `F4` Priest
 
-Per-slot controls:
+Controls for all classes:
 
-- Mage: move `W A S D`, skills `1 2 3 4`, item modifier `Shift`
-- Warrior: move arrows, skills `NumPad1-4`, item modifier `Enter`
-- Tank: move `I J K L`, skills `Z X C V`, item modifier `O`
-- Priest: move `T F G H`, skills `R U B N`, item modifier `Y`
+- move `W A S D`
+- hotbar skills `1 2 3 4`
+- item modifier `Shift`
 
 Save state:
 
@@ -71,33 +75,32 @@ Class defaults:
 - Tank -> `EARTH`
 - Priest -> `ICE`
 
+Class race/profession identities:
+
+- Warrior (`HUMAN`) -> `FORESTING`, `WOODCUTTING`
+- Tank (`DWARF`) -> `FORGING`, `MINING_ORES`, `MINING_ORBS` (orbs for wand crafting)
+- Mage (`ELF`) -> `CRAFT_SCROLLS`, `CRAFT_ROBES`, `CRAFT_WANDS`
+- Priest (`HALF_ELF`) -> `ALCHEMY`, `BLESSING_ENCHANTING`
+
 Element/status behavior:
 
 - active skill type is the current signature element (`FIRE`, `ICE`, `LIGHTNING`, `EARTH`)
 - applied status effect is derived from the active element
 - all classes can cycle elements at runtime
 
-Inventory item controls:
+Hotbar controls:
 
-- `modifier + skill1`: cycle selected item
-- `modifier + skill2`: use selected item
-- `modifier + skill3`: increase selected attribute
-- `modifier + skill4`: decrease selected attribute
+- `skill1..skill4`: use hotbar abilities
+
+Inventory controls:
+
+- `modifier + skill1`: select previous inventory item
+- `modifier + skill2`: use selected inventory item
+- `modifier + skill3`: select next inventory item
 
 Items:
 
 - `ELEMENT_TUNER`: cycles active element
-- `STATUS_TUNER`: cycles status (and syncs matching element)
-- `ATTRIBUTE_TUNER`: cycles editable attribute
-
-Editable attributes:
-
-- `MAX_HP`
-- `HP_REGEN`
-- `MAX_MANA`
-- `MANA_REGEN`
-- `AP`
-- `DEFENCE`
 
 Leveling:
 
